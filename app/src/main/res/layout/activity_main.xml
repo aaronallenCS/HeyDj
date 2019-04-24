@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainSplashActivity"
+    android:background="@color/colorPrimaryDark">
+
+    <ImageView
+        android:id="@+id/image_album_splash"
+        android:layout_width="292dp"
+        android:layout_height="229dp"
+        android:foregroundGravity="center"
+        android:src="@drawable/ic_album"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/hey_dj_intro"
+        android:layout_width="229dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="116dp"
+        android:gravity="center"
+        android:text="Hey, DJ!"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Display2"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</android.support.constraint.ConstraintLayout>

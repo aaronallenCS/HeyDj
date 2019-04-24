@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "558614802959",
+    "firebase_url": "https://heydj-8acaa.firebaseio.com",
+    "project_id": "heydj-8acaa",
+    "storage_bucket": "heydj-8acaa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:558614802959:android:0e271cca48437bda",
+        "android_client_info": {
+          "package_name": "com.example.android.heydj"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "558614802959-kh34uspen6acm51vu9m1shi2in3ngk97.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCntMQJVvnSKSh36xuCTvKcuQr3-7wekP8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

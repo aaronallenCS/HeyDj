@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.constraint.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/results_recycler"
+        android:layout_width="269dp"
+        android:layout_height="128dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="68dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DjNameET"
+        app:layout_constraintVertical_bias="0.374" />
+
+        <EditText
+            android:id="@+id/DjNameET"
+            android:layout_width="274dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="108dp"
+            android:ems="10"
+            android:hint="Search DJ Name..."
+            android:inputType="textPersonName"
+            android:imeOptions="actionSearch"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.285"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/searchBtn"
+        style="?android:buttonBarButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:src="@drawable/ic_search_black_24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/DjNameET"
+        app:layout_constraintEnd_toEndOf="@+id/DjNameET"
+        app:layout_constraintTop_toTopOf="@+id/DjNameET"
+        app:layout_constraintVertical_bias="1.0" />
+
+
+    </android.support.constraint.ConstraintLayout>

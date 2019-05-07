@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static com.example.android.heydj.DjLanding.personName;
 
 /**
  * A login screen that offers login via email/password.
@@ -69,7 +70,7 @@ public class RegisterDJActivity extends AppCompatActivity
     private View mProgressView;
     private View mLoginFormView;
 
-    DatabaseReference rootRef, demoRef;
+    DatabaseReference rootRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,50 +103,44 @@ public class RegisterDJActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
+                //get the dj name the user typed in and entered
                 final String djName = mDjName.getText().toString();
 
-                SharedPreferences preferences = getSharedPreferences("DjName", MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-
-                editor.putString("djName", djName);
-                editor.commit();
-
-                String uniqueID = mUniqueDjID.getText().toString();
+                //Get the last account signed in from the user
                 GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(RegisterDJActivity.this);
-                demoRef = rootRef.child("djprofile");
 
-                if(acct != null)
-                {
-                    final String personName = acct.getDisplayName();
+                //get the name of the google user
+                final String googleUserName = acct.getDisplayName();
 
-                    demoRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(personName).child("djName");
-
-                            if(dataSnapshot.hasChild(personName))
-                            {
-                                Map<String, Object> updates = new HashMap<String, Object>();
-                                updates.put(personName, djName);
-                                ref.child(djName).updateChildren(updates);
-//                                demoRef.child(personName).child("djName").setValue(djName);
-                            }
-                            else
-                            {
-                                ref.child(personName).child("djName").setValue(djName);
-                            }
+                rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        //checks in the database to see if the user already has DJs
+                        if(dataSnapshot.hasChild(googleUserName))
+                        {
+                            //pushes the value allDeeJays for every single user
+                            rootRef.child("allDeeJays").push().setValue(djName);
+                            //pushes the value of the dj to the dj for the specific google user
+                            rootRef.child(googleUserName).child("allDj").push().setValue(djName);
                         }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        else
+                        {
+                            //sets a new google username for ones that don't exist
+                            rootRef.child(googleUserName).child("allDj").child("name").push().setValue(djName);
                         }
-                    });
+                    }
 
-                }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError)
+                    {
+
+
+                    }
+                });
+
                 Intent intent = new Intent(view.getContext(), DjLanding.class);
                 intent.putExtra("DjName", djName);
                 startActivity(intent);
-
             }
         });
 

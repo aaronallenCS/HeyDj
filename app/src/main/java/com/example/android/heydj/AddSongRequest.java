@@ -2,6 +2,7 @@ package com.example.android.heydj;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,11 +19,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.heydj.SpotifyClasses.HeyDJProperties;
 import com.example.android.heydj.SpotifyClasses.JSONResultsList;
 import com.example.android.heydj.SpotifyClasses.SpotifyClient;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,13 +56,16 @@ public class AddSongRequest extends AppCompatActivity
     Button mValidateBtn;
 
     EditText mArtistName;
-    EditText mSongName;
+    ImageView albumArt;
 
-    private static Context mContext;
+
+    protected static Context mContext;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private List<String> songLists;
+    private List<String> urlImages;
+    public static String djNameSelected;
 
 
     @Override
@@ -76,8 +83,8 @@ public class AddSongRequest extends AppCompatActivity
 
         mDj = (TextView) findViewById(R.id.displayDjNameRequest);
 
-        String s = getIntent().getStringExtra("DjName");
-        mDj.setText("Request songs to: " + s);
+        djNameSelected = getIntent().getStringExtra("DjName");
+        mDj.setText("Request songs to: " + djNameSelected);
 
         mArtistName = (EditText) findViewById(R.id.editText2);
 
@@ -89,10 +96,11 @@ public class AddSongRequest extends AppCompatActivity
 
 
         songLists = new ArrayList<String>();
+        urlImages = new ArrayList<String>();
 
 
 
-        adapter = new TrackAdapter(getApplicationContext(), songLists);
+        adapter = new TrackAdapter(getApplicationContext(), songLists, urlImages);
 
 
         //clicking on the floating action button to test the returned api query result
@@ -123,26 +131,36 @@ public class AddSongRequest extends AppCompatActivity
                         JSONArray items = tracks.getJSONArray("items");
 
 
-                        int n = items.length();
-
-
-                        for(int i = 0; i < n; i++)
+                        for(int i = 0; i < items.length(); i++)
                         {
-                            JSONObject name = items.getJSONObject(i);
+                            //album object
+                            JSONObject album = items.getJSONObject(i).getJSONObject("album");
+                            //SHOULD be getting the images array but does not
+                            JSONArray images = album.getJSONArray("images");
 
-                            JSONArray artists = name.getJSONArray("artists");
-                            JSONArray images = name.getJSONArray("images");
 
-                            Log.d("INFO", name.getString("name"));
+                            //artist array
+                            JSONArray artists = album.getJSONArray("artists");
 
+                            Log.d("INFO", album.getString("name"));
+
+                            for(int k = 0; k < images.length(); k++)
+                            {
+                                JSONObject img = images.getJSONObject(0);
+                                Log.d("image", img.getString("url"));
+
+                                urlImages.add(img.getString("url"));
+                            }
+
+
+                            //gets the necessary artist information
                             for(int j = 0; j < artists.length(); j++)
                             {
                                 JSONObject artist = artists.getJSONObject(j);
 
-                                songLists.add(artist.getString("name") +  " - " +name.getString("name"));
+                                songLists.add(artist.getString("name") +  " - " +album.getString("name"));
+                                
                             }
-
-
                         }
                     }
                     catch(JSONException e)

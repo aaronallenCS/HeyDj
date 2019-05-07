@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.common.internal.Constants;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -69,8 +70,10 @@ public class AttendeeLandingActivity extends AppCompatActivity {
                     }
                 });
 
-                query = mProfileDatabase.child("djprofile").orderByChild("djName")
+                //queries all the information for every single dj name
+                query = mProfileDatabase.child("allDeeJays")
                         .startAt(t.getText().toString()).endAt(t.getText().toString() + "\uf8ff");
+
 
                 FirebaseRecyclerOptions<DjProfile> firebaseRecyclerOptions = new FirebaseRecyclerOptions.Builder<DjProfile>()
                         .setQuery(query, DjProfile.class)

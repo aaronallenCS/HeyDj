@@ -1,12 +1,15 @@
 package com.example.android.heydj;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -15,11 +18,18 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LandingActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String TAG = "LandingActivity";
-    protected static GoogleSignInClient mGoogleSignInClient;
-    static final int RC_SIGN_IN = 1;  // The request code
+    private final String TAG = "LandingActivity";
+    protected GoogleSignInClient mGoogleSignInClient;
+    protected GoogleSignInOptions gso;
+
+    final int RC_SIGN_IN = 1;  // The request code
 
 
     @Override
@@ -28,17 +38,28 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        String djName = RegisterDJActivity.getDefaults("DjName", getApplicationContext());
+
+        if (djName != null)
+        {
+            Intent i = new Intent(getApplicationContext(), DjLanding.class);
+            startActivity(i);
+        }
 
         SignInButton signInButton = findViewById(R.id.sign_out_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         setGooglePlusButtonText(signInButton, "Sign in with Google");
 
         findViewById(R.id.sign_out_button).setOnClickListener(this);
+
 
 
         Button b = (Button) findViewById(R.id.button_direct_attendee);
@@ -70,17 +91,32 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    private void updateUI(GoogleSignInAccount gsa)
+    private void updateUI(final GoogleSignInAccount gsa)
     {
-        if(gsa != null)
-        {
-            Intent i = new Intent(this, RegisterDJActivity.class);
-            startActivity(i);
-        }
-        else
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+        rootRef.addListenerForSingleValueEvent(new ValueEventListener()
         {
 
-        }
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChild(gsa.getDisplayName()))
+                {
+                    Intent i = new Intent(getApplicationContext(), ListDjActivity.class);
+                    startActivity(i);
+                }
+                else
+                {
+                    Intent i = new Intent(getApplicationContext(), RegisterDJActivity.class);
+
+                    startActivity(i);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -97,11 +133,13 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
     private void signIn()
     {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+
         startActivityForResult(signInIntent,RC_SIGN_IN);
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
@@ -113,7 +151,8 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask)
+    {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
@@ -126,5 +165,7 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
             updateUI(null);
         }
     }
+
+
 
 }

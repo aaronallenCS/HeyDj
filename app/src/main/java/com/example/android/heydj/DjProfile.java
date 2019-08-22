@@ -6,16 +6,14 @@ import com.google.firebase.database.PropertyName;
 public class DjProfile
 {
     String djName;
-    String googleUserName;
 
-    public DjProfile(String djName, String googleUserName)
+
+    public DjProfile(String djName)
     {
         this.djName = djName;
-        this.googleUserName = googleUserName;
     }
-    public DjProfile(){}
 
-    public void setdjName(String djName)
+    public void setDjName(String djName)
     {
         this.djName = djName;
     }
@@ -23,14 +21,5 @@ public class DjProfile
     public String getdjName()
     {
         return djName;
-    }
-
-    public void setgoogleUserName(String googleUserName)
-    {
-        this.googleUserName = googleUserName;
-    }
-    public String getgoogleUserName()
-    {
-        return googleUserName;
     }
 }

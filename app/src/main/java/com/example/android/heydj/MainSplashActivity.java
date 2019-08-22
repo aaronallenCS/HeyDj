@@ -11,10 +11,13 @@ import android.widget.TextView;
 
 public class MainSplashActivity extends AppCompatActivity {
 
-    private static int SPLASH_TIME_OUT = 5000;
+    private int SPLASH_TIME_OUT = 5000;
 
-    private static TextView heyDj;
-    private static ImageView spinninRecords;
+//    private TextView heyDj;
+    private ImageView spinninRecords;
+    private Animation myFadeInAnimation;
+    private Animation mySpinAnimation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -22,18 +25,17 @@ public class MainSplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        heyDj = (TextView) findViewById(R.id.hey_dj_intro);
+//        heyDj = (TextView) findViewById(R.id.hey_dj_intro);
         spinninRecords = (ImageView) findViewById(R.id.image_album_splash);
 
         Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fadein);
-        heyDj.startAnimation(myFadeInAnimation);
+//        heyDj.startAnimation(myFadeInAnimation);
         spinninRecords.startAnimation(myFadeInAnimation);
 
-        Animation mySpinAnimation = AnimationUtils.loadAnimation(this, R.anim.spin_logo);
-        spinninRecords.startAnimation(mySpinAnimation);
 
 
-        new Handler().postDelayed(new Runnable(){
+        spinninRecords.postDelayed(new Runnable()
+        {
             @Override
             public void run()
             {
@@ -42,6 +44,5 @@ public class MainSplashActivity extends AppCompatActivity {
                 finish();
             }
         }, SPLASH_TIME_OUT);
-
     }
 }

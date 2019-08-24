@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.android.heydj.Fragments.Settings;
@@ -46,11 +47,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -143,9 +147,10 @@ public class DjLanding extends AppCompatActivity implements Settings.OnFragmentI
                             {
                                 return snapshot;
                             }
+
                         }).build();
 
-                final HashMap<String, Integer> songCounts = new HashMap<String, Integer>();
+
 
                 firebaseRecyclerAdapter =
                         new FirebaseRecyclerAdapter<DataSnapshot, ResultsViewHolder>(firebaseRecyclerOptions)
@@ -154,13 +159,14 @@ public class DjLanding extends AppCompatActivity implements Settings.OnFragmentI
                             @Override
                             protected void onBindViewHolder(@NonNull ResultsViewHolder holder, int position, @NonNull DataSnapshot model)
                             {
+
                                 List<String> sArr = new ArrayList<String>();
                                 for(DataSnapshot snapshot : model.getChildren())
                                 {
                                     sArr.add(snapshot.getValue(String.class));
                                 }
 
-
+                                LinkedHashMap<String, Integer> songCounts = new LinkedHashMap<>();
                                 for(int i = 0; i < sArr.size(); i++)
                                 {
                                     String eachSong = sArr.get(i);
@@ -174,21 +180,12 @@ public class DjLanding extends AppCompatActivity implements Settings.OnFragmentI
                                         songCounts.put(eachSong, 1);
                                     }
                                 }
-
-                                Collection<String> name = songCounts.keySet();
-                                Collection<Integer> ctn = songCounts.values();
-
-
-                                for(String s2 : name) {
-
-                                    Log.d("MAKE SURE", s2);
-                                    holder.djNameView.setText(s2);
+                                ArrayList<POJO> arrayList = new ArrayList<>();
+                                for(Map.Entry<String,Integer> s:songCounts.entrySet()){
+                                    POJO pojo = new POJO(s.getKey(),s.getValue());
+                                    arrayList.add(pojo);
                                 }
-                                for(Integer i : ctn)
-                                {
-                                    Log.d("MAKE SURE", i + " songs");
-                                    holder.badge.setText(Integer.toString(i));
-                                }
+                                holder.setData(arrayList);
                             }
 
 
@@ -196,13 +193,14 @@ public class DjLanding extends AppCompatActivity implements Settings.OnFragmentI
                             @Override
                             public ResultsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i)
                             {
-                                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.djname_item, viewGroup, false);
+                                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.djlanding_linear, viewGroup, false);
                                 return new ResultsViewHolder(view);
                             }
                         };
 
                 firebaseRecyclerAdapter.startListening();
                 recyclerView.setAdapter(firebaseRecyclerAdapter);
+
 
             }
 
@@ -302,17 +300,59 @@ public class DjLanding extends AppCompatActivity implements Settings.OnFragmentI
 
 
 
-    public static class ResultsViewHolder extends RecyclerView.ViewHolder
+    public class ResultsViewHolder extends RecyclerView.ViewHolder
     {
-        private TextView djNameView;
-        private TextView badge;
+        //private TextView djNameView;
+        //private TextView badge;
+        private LinearLayout linear;
 
 
         public ResultsViewHolder(View itemView)
         {
             super(itemView);
-            djNameView = itemView.findViewById(R.id.song_result_dj);
-            badge = itemView.findViewById(R.id.song_badge);
+            linear = itemView.findViewById(R.id.linear);
+            //djNameView = itemView.findViewById(R.id.song_result_dj);
+            //badge = itemView.findViewById(R.id.song_badge);
+        }
+        void setData(ArrayList<POJO> pojo)
+        {
+            for(POJO p:pojo) {
+                View child = getLayoutInflater().inflate(R.layout.djname_item, null);
+                TextView djNameView = child.findViewById(R.id.song_result_dj);
+                TextView badge = child.findViewById(R.id.song_badge);
+                djNameView.setText(p.getName());
+                badge.setText(p.getCount()+"");
+                linear.addView(child);
+            }
+            //djNameView.setText(pojo.getName());
+            //badge.setText(pojo.getCount()+"");
+        }
+
+    }
+
+    public class POJO{
+        String name;
+        Integer count;
+
+        public POJO(String name, Integer count) {
+            this.name = name;
+            this.count = count;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Integer getCount() {
+            return count;
+        }
+
+        public void setCount(Integer count) {
+            this.count = count;
         }
     }
 

@@ -4,22 +4,15 @@
         <group android:checkableBehavior="single">
 
             <item
-
-                android:id="@+id/nav_first_fragment"
-                android:title="First" />
-
-            <item
-
-                android:id="@+id/nav_second_fragment"
-                android:title="Second" />
+                android:id="@+id/about_me"
+                android:icon="@drawable/ic_person_black_24dp"
+                android:title="About Me" />
 
             <item
 
-                android:id="@+id/nav_third_fragment"
-
-                android:icon="@drawable/ic_settings_black_24dp"
-
-                android:title="Song Limit" />
+                android:id="@+id/help_fragment"
+                android:icon="@drawable/ic_info_black_24dp"
+                android:title="Help / FAQ" />
         </group>
 
 </menu>

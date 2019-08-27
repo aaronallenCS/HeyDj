@@ -33,6 +33,8 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.heydj.Fragments.AboutMeFragment;
+import com.example.android.heydj.Fragments.HelpFragment;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -44,9 +46,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,31 +57,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
-public class DjLanding extends AppCompatActivity
+public class DjLanding extends AppCompatActivity implements HelpFragment.OnFragmentInteractionListener, AboutMeFragment.OnFragmentInteractionListener
 {
-    public Query query;
-
     DatabaseReference mProfileDatabase;
     DrawerLayout mDrawer;
     NavigationView navDrawer;
     List<String> songNames;
     public ArrayList<POJO> arrayList = new ArrayList<>();
     public ArrayList<POJO> newList = new ArrayList<POJO>();
-
     public CustomRecyclerAdapter adapter = new CustomRecyclerAdapter(DjLanding.this,arrayList);
     public RecyclerView recyclerView;
     public String djName;
-    public CircleImageView imgV;
-
-
     public static final int SELECT_IMAGE = 1;
-
     public int pickerValue;
-
     public static GoogleApiClient mGoogleApiClient;
-    Button imgB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -101,22 +90,10 @@ public class DjLanding extends AppCompatActivity
         navDrawer = (NavigationView) findViewById(R.id.nav_view);
         setupDrawerContent(navDrawer);
 
-        View headerLayout = navDrawer.getHeaderView(0); // 0-index header
-
         final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
         recyclerView = findViewById(R.id.display_name_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         djName = getIntent().getStringExtra("djName");
-
-//        imgB.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent();
-//                intent.setType("image/*");
-//                intent.setAction(Intent.ACTION_GET_CONTENT);
-//                startActivityForResult(Intent.createChooser(intent, "Select Picture"),SELECT_IMAGE);
-//            }
-//        });
 
         mProfileDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -205,8 +182,6 @@ public class DjLanding extends AppCompatActivity
                 if (data != null) {
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-                        CircleImageView imgV = findViewById(R.id.dj_pic);
-                        imgV.setImageBitmap(bitmap);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -219,7 +194,8 @@ public class DjLanding extends AppCompatActivity
 
     private void setupDrawerContent(NavigationView navigationView)
     {
-        navDrawer.setNavigationItemSelectedListener(
+        navDrawer.setNavigationItemSelectedListener
+                (
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -375,7 +351,6 @@ public class DjLanding extends AppCompatActivity
                             .create();
 
                     arrayList.clear();
-
                     myDialog.show();
                 }
                 return true;
@@ -414,65 +389,63 @@ public class DjLanding extends AppCompatActivity
         return sortedMap;
     }
 
-
     public void selectDrawerItem(MenuItem menuItem)
     {
+        Fragment fragment = null;
+        Class fragmentClass;
 
-//        Fragment fragment = null;
-//        Class fragmentClass;
-//
-//        switch(menuItem.getItemId())
-//        {
-//            case R.id.nav_third_fragment:
-//                fragmentClass = Settings.class;
-//                break;
-//            default:
-//                fragmentClass = Settings.class;
-//                break;
-//        }
-//
-//        try
-//        {
-//            fragment = (Fragment) fragmentClass.newInstance();
-//        }catch(Exception e)
-//        {
-//            e.printStackTrace();
-//        }
-//
-//        FrameLayout fragmentLayout = new FrameLayout(this);
-//        fragmentLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-//
-//        fragmentLayout.setId(R.id.flContent);
-//
-//        setContentView(fragmentLayout);
-//        getSupportFragmentManager()
-//                .beginTransaction()
-//                .add(R.id.flContent, new Settings()).commit();
-//        getSupportActionBar().setHomeButtonEnabled(true);
-//
-//        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-//            @Override
-//            public void onBackStackChanged() {
-//                int stackHeight = getSupportFragmentManager().getBackStackEntryCount();
-//                if (stackHeight > 0) {
-//                    getSupportActionBar().setHomeButtonEnabled(true);
-//                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//                } else {
-//                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-//                    getSupportActionBar().setHomeButtonEnabled(false);
-//                }
-//            }
-//        });
-//
-//        menuItem.setChecked(true);
-//        setTitle(menuItem.getTitle());
-//        mDrawer.closeDrawers();
+        switch(menuItem.getItemId())
+        {
+            case R.id.help_fragment:
+                fragmentClass = HelpFragment.class;
+                break;
+            case R.id.about_me:
+                fragmentClass = AboutMeFragment.class;
+                break;
+            default:
+                fragmentClass = AboutMeFragment.class;
+        }
+
+        try
+        {
+            fragment = (Fragment) fragmentClass.newInstance();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+        FrameLayout fragmentLayout = new FrameLayout(this);
+        fragmentLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        fragmentLayout.setId(R.id.flContent);
+
+        setContentView(fragmentLayout);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.flContent, fragment).commit();
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                int stackHeight = getSupportFragmentManager().getBackStackEntryCount();
+                if (stackHeight > 0) {
+                    getSupportActionBar().setHomeButtonEnabled(true);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                } else {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    getSupportActionBar().setHomeButtonEnabled(false);
+                }
+            }
+        });
+
+        menuItem.setChecked(true);
+        setTitle(menuItem.getTitle());
+        mDrawer.closeDrawers();
     }
 
-//    @Override
-//    public void onFragmentInteraction(Uri uri) {
-//
-//    }
 
     @Override
     protected void onStart()
@@ -486,6 +459,11 @@ public class DjLanding extends AppCompatActivity
 
         mGoogleApiClient.connect();
         super.onStart();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
 

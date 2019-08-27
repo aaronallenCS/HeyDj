@@ -60,8 +60,6 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
 
         findViewById(R.id.sign_out_button).setOnClickListener(this);
 
-
-
         Button b = (Button) findViewById(R.id.button_direct_attendee);
 
         b.setOnClickListener(new View.OnClickListener(){
@@ -133,7 +131,6 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
     private void signIn()
     {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-
         startActivityForResult(signInIntent,RC_SIGN_IN);
     }
 

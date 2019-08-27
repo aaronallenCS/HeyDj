@@ -3,51 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/gradient_background"
     tools:context=".Fragments.AboutMeFragment">
 
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_abt"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/gradient_background"
-        android:orientation="vertical">
+        android:layout_height="?attr/actionBarSize"
+        app:layout_collapseMode="pin"/>
 
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:text="About Me"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display2"/>
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:text="Links" />
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:text="Bio" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:text="Help / App Feedback" />
-    </LinearLayout>
 
 </FrameLayout>

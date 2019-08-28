@@ -20,7 +20,7 @@
             android:layout_marginTop="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
-            android:layout_weight="1.5"
+            android:layout_weight="1.8"
             android:text="DJ Directions"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
@@ -33,7 +33,7 @@
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
             android:layout_weight="1.5"
-            android:text="Some filler help"
+            android:text="blankity"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <TextView
@@ -44,7 +44,7 @@
             android:layout_marginTop="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
-            android:layout_weight="1.5"
+            android:layout_weight="1.8"
             android:text="Party Goer Directions"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         <TextView
@@ -61,5 +61,4 @@
 
 
     </LinearLayout>
-    <!-- TODO: Update blank fragment layout -->
 </FrameLayout>

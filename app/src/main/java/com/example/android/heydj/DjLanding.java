@@ -5,13 +5,19 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -57,12 +63,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class DjLanding extends AppCompatActivity implements HelpFragment.OnFragmentInteractionListener, AboutMeFragment.OnFragmentInteractionListener
 {
     DatabaseReference mProfileDatabase;
     DrawerLayout mDrawer;
     NavigationView navDrawer;
-    List<String> songNames;
+    ArrayList<String> songNames;
     public ArrayList<POJO> arrayList = new ArrayList<>();
     public ArrayList<POJO> newList = new ArrayList<POJO>();
     public CustomRecyclerAdapter adapter = new CustomRecyclerAdapter(DjLanding.this,arrayList);
@@ -77,8 +85,14 @@ public class DjLanding extends AppCompatActivity implements HelpFragment.OnFragm
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dj_landing);
+
+        CollapsingToolbarLayout tb = findViewById(R.id.collapsing_toolbar_layout);
+
+        tb.setTitleEnabled(false);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        getSupportActionBar().setTitle("Requests");
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -96,6 +110,23 @@ public class DjLanding extends AppCompatActivity implements HelpFragment.OnFragm
         djName = getIntent().getStringExtra("djName");
 
         mProfileDatabase = FirebaseDatabase.getInstance().getReference();
+
+//        View itemView = navDrawer.getHeaderView(0);
+
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                sendIntent.putStringArrayListExtra(Intent.EXTRA_STREAM, songNames);
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent, "Share songs to..."));
+            }
+        });
+
+
 
         Button mButtonSignOut = (Button) findViewById(R.id.sign_out_button);
         mButtonSignOut.setOnClickListener(new View.OnClickListener() {
@@ -174,23 +205,46 @@ public class DjLanding extends AppCompatActivity implements HelpFragment.OnFragm
         });
     }
 
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SELECT_IMAGE) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null) {
-                    try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else if (resultCode == Activity.RESULT_CANCELED)  {
-                Toast.makeText(DjLanding.this, "Canceled", Toast.LENGTH_SHORT).show();
-            }
-        }
+
+
     }
+
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+////        if (requestCode == SELECT_IMAGE) {
+////            if (resultCode == Activity.RESULT_OK) {
+////                if (data != null) {
+////                    try {
+////                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+////                    } catch (IOException e) {
+////                        e.printStackTrace();
+////                    }
+////                }
+////            } else if (resultCode == Activity.RESULT_CANCELED)  {
+////                Toast.makeText(DjLanding.this, "Canceled", Toast.LENGTH_SHORT).show();
+////            }
+////        }
+//
+//
+//        switch(requestCode)
+//        {
+//            case 0:
+//                if(resultCode == RESULT_OK)
+//                {
+//
+//                }
+//                break;
+//            case 1:
+//                if(resultCode == RESULT_OK)
+//                {
+//
+//                }
+//                break;
+//        }
+//    }
 
     private void setupDrawerContent(NavigationView navigationView)
     {

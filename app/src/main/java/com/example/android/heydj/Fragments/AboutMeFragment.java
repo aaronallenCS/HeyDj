@@ -1,18 +1,17 @@
 package com.example.android.heydj.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-import com.example.android.heydj.DjLanding;
-import com.example.android.heydj.LandingActivity;
 import com.example.android.heydj.R;
 
 /**
@@ -60,8 +59,6 @@ public class AboutMeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -71,24 +68,20 @@ public class AboutMeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        View rootView = inflater.inflate(R.layout.fragment_about_me, container, false);
-//
-//        Toolbar mToolBar = (Toolbar) rootView.findViewById(R.id.toolbar);
-//
-//        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolBar);
-//        return rootView;
 
-        View rootView = inflater.inflate(R.layout.fragment_about_me, container, false);
-        Toolbar toolbar = rootView.findViewById(R.id.toolbar_abt);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent homeIntent = new Intent(getContext(), DjLanding.class);
-                startActivity(homeIntent);
-            }
-        });
-        return rootView;
+        View itemView = inflater.inflate(R.layout.fragment_about_me, container, false);
+
+        Toolbar toolbarT = itemView.findViewById(R.id.toolbar_abt);
+        toolbarT.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+        TextView textView = (TextView) itemView.findViewById(R.id.sc_link);
+        textView.setClickable(true);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        String text = "www.soundcloud.com/octxbrr";
+        textView.setText("Check out my beats at: " + Html.fromHtml(text));
+
+        // Inflate the layout for this fragment
+        return itemView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

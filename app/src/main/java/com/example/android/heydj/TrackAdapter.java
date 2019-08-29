@@ -4,29 +4,20 @@ package com.example.android.heydj;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Filter;
-import android.widget.Filterable;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+
 import java.util.List;
 
 public class TrackAdapter extends RecyclerView.Adapter<TrackViewHolder>
@@ -34,6 +25,8 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackViewHolder>
     private final List<String> mSongList;
     private LayoutInflater mInflater;
     private String mCurrent;
+
+    private InterstitialAd mInterstitialAd;
 
 
     public TrackAdapter(Context context, List<String> mSongList)
@@ -47,6 +40,11 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackViewHolder>
     {
         mCurrent = mSongList.get(position);
         holder.songItemView.setText(mCurrent);
+        MobileAds.initialize(holder.itemView.getContext(), new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {}
+        });
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener(){
 
@@ -63,6 +61,18 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackViewHolder>
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id)
                             {
+                                mInterstitialAd = new InterstitialAd(holder.itemView.getContext());
+                                mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+                                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                                mInterstitialAd.setAdListener(new AdListener(){
+                                    public void onAdLoaded()
+                                    {
+                                        if(mInterstitialAd.isLoaded())
+                                        {
+                                            mInterstitialAd.show();
+                                        }
+                                    }
+                                });
                                 FirebaseDatabase.getInstance().getReference().child(AddSongRequest.getAssociatedAcct).child("song").push().setValue(holder.songItemView.getText().toString());
                             }
                         });

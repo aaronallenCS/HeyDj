@@ -1,30 +1,27 @@
 package com.example.android.heydj;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,8 +30,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +48,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.vansuita.pickimage.bean.PickResult;
+import com.vansuita.pickimage.bundle.PickSetup;
+import com.vansuita.pickimage.dialog.PickImageDialog;
+import com.vansuita.pickimage.listeners.IPickResult;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,6 +80,7 @@ public class DjLanding extends AppCompatActivity implements HelpFragment.OnFragm
     public static final int SELECT_IMAGE = 1;
     public int pickerValue;
     public static GoogleApiClient mGoogleApiClient;
+    private CircleImageView circleImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -112,16 +114,24 @@ public class DjLanding extends AppCompatActivity implements HelpFragment.OnFragm
         mProfileDatabase = FirebaseDatabase.getInstance().getReference();
 
 //        View itemView = navDrawer.getHeaderView(0);
+        songNames = new ArrayList<String>();
 
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
-                sendIntent.putStringArrayListExtra(Intent.EXTRA_STREAM, songNames);
+                String shareBody = "";
+                int x = 0;
+                for(String i:songNames){
+                    if(x<=20)
+                        shareBody+=i+"\n";
+                    x++;
+                }
+                Intent sendIntent = new Intent(Intent.ACTION_SEND);
                 sendIntent.setType("text/plain");
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT,"Share");
+                sendIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
                 startActivity(Intent.createChooser(sendIntent, "Share songs to..."));
             }
         });
@@ -147,7 +157,36 @@ public class DjLanding extends AppCompatActivity implements HelpFragment.OnFragm
                 );
             }
         });
-        songNames = new ArrayList<String>();
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+        ref.child(getIntent().getStringExtra("djName")).child("profile_image").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+
+                if(dataSnapshot.getValue() != null)
+                {
+                    try
+                    {
+                        String value = dataSnapshot.getValue(String.class);
+                        Log.d("IMAGEPULL", value);
+                        Bitmap imageBitmap = decodeFromFirebaseBase64(value);
+                        circleImageView.setImageBitmap(imageBitmap);
+                    }
+                    catch(IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
         mProfileDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -184,6 +223,7 @@ public class DjLanding extends AppCompatActivity implements HelpFragment.OnFragm
                                 for(Map.Entry<String,Integer> s : hashSorted.entrySet())
                                 {
                                     POJO pojo = new POJO(s.getKey(), s.getValue());
+                                    songNames.add(s.getKey()+" ("+s.getValue()+")");
                                     arrayList.add(pojo);
                                 }
 
@@ -203,61 +243,62 @@ public class DjLanding extends AppCompatActivity implements HelpFragment.OnFragm
 
             }
         });
+        View navHeader = navDrawer.getHeaderView(0);
+        circleImageView = navHeader.findViewById(R.id.dj_pic);
+        circleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PickImageDialog.build(new PickSetup()).show(DjLanding.this)
+                        .setOnPickResult(new IPickResult() {
+                            @Override
+                            public void onPickResult(PickResult r) {
+                                if(r.getError()==null){
+                                    circleImageView.setImageBitmap(r.getBitmap());
+                                    encodeBitmapAndSaveToFirebase(r.getBitmap());
+                                }
+                            }
+                        });
+            }
+        });
+    }
+
+    public static Bitmap decodeFromFirebaseBase64(String image) throws IOException
+    {
+        byte[] decodedByteArray = android.util.Base64.decode(image, Base64.DEFAULT);
+
+        return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+
+    }
+
+    public void encodeBitmapAndSaveToFirebase(Bitmap bitmap)
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+
+        String imageEncoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child(getIntent().getStringExtra("djName")).child("profile_image").setValue(imageEncoded);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-
     }
 
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-////        if (requestCode == SELECT_IMAGE) {
-////            if (resultCode == Activity.RESULT_OK) {
-////                if (data != null) {
-////                    try {
-////                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-////                    } catch (IOException e) {
-////                        e.printStackTrace();
-////                    }
-////                }
-////            } else if (resultCode == Activity.RESULT_CANCELED)  {
-////                Toast.makeText(DjLanding.this, "Canceled", Toast.LENGTH_SHORT).show();
-////            }
-////        }
-//
-//
-//        switch(requestCode)
-//        {
-//            case 0:
-//                if(resultCode == RESULT_OK)
-//                {
-//
-//                }
-//                break;
-//            case 1:
-//                if(resultCode == RESULT_OK)
-//                {
-//
-//                }
-//                break;
-//        }
-//    }
 
     private void setupDrawerContent(NavigationView navigationView)
     {
         navDrawer.setNavigationItemSelectedListener
                 (
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
-                }
-        );
+                        new NavigationView.OnNavigationItemSelectedListener() {
+                            @Override
+                            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                                selectDrawerItem(menuItem);
+                                return true;
+                            }
+                        }
+                );
     }
 
     @Override
@@ -512,6 +553,7 @@ public class DjLanding extends AppCompatActivity implements HelpFragment.OnFragm
                 .build();
 
         mGoogleApiClient.connect();
+
         super.onStart();
     }
 

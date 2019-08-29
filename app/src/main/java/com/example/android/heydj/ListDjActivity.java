@@ -1,11 +1,11 @@
 package com.example.android.heydj;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,10 +25,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 public class ListDjActivity extends AppCompatActivity
 {
     private FirebaseRecyclerAdapter<DataSnapshot, ListResultsHolder> firebaseRecyclerAdapter;
@@ -36,12 +32,11 @@ public class ListDjActivity extends AppCompatActivity
 
     DatabaseReference mProfileDatabase;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_dj);
+
 
         final RecyclerView recyclerView = findViewById(R.id.list_curr_dj);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

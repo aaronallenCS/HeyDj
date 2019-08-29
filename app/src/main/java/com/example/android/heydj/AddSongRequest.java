@@ -2,13 +2,17 @@ package com.example.android.heydj;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -47,8 +51,6 @@ public class AddSongRequest extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        progressBar = findViewById(R.id.progress_bar);
-
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -65,39 +67,46 @@ public class AddSongRequest extends AppCompatActivity
         recyclerView = (RecyclerView) findViewById(R.id.search_result_recycler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final CoordinatorLayout cdl = findViewById(R.id.cdLayout);
 
+        final EditText djSearch = findViewById(R.id.editText2);
+
+        djSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+
+                if(i == EditorInfo.IME_ACTION_SEARCH)
+                {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(cdl.getWindowToken(), 0);
+                    songLists.clear();
+                    adapter.notifyDataSetChanged();
+                    updateInfo();
+                }
+                return false;
+            }
+        });
 
         songLists = new ArrayList<String>();
         adapter = new TrackAdapter(getApplicationContext(), songLists);
 
         imageButton = findViewById(R.id.search);
-        clearBtn = findViewById(R.id.clear);
 
-        clearBtn.setVisibility(View.INVISIBLE);
         imageButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
 
-                clearBtn.setVisibility(View.VISIBLE);
-                imageButton.setVisibility(View.INVISIBLE);
-
-                clearBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mArtistName.setText("");
-                    }
-                });
-
-                if(mArtistName.equals(""))
-                {
-                    clearBtn.setVisibility(View.INVISIBLE);
-                    imageButton.setVisibility(View.VISIBLE);
-                }
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(cdl.getWindowToken(), 0);
+                songLists.clear();
+                adapter.notifyDataSetChanged();
                 updateInfo();
             }
         });
+
+
 
 
 
@@ -106,7 +115,7 @@ public class AddSongRequest extends AppCompatActivity
 
     public void updateInfo()
     {
-        songLists.clear();
+
         try
         {
             recyclerView.setVisibility(View.VISIBLE);

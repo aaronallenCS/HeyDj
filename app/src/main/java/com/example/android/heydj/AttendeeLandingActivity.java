@@ -1,42 +1,34 @@
 package com.example.android.heydj;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import java.util.HashMap;
-import java.util.Map;
 
 public class AttendeeLandingActivity extends AppCompatActivity {
 
@@ -55,6 +47,10 @@ public class AttendeeLandingActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        final CoordinatorLayout cdl = findViewById(R.id.cdAttendee);
+
+
+
         final RecyclerView recyclerView = findViewById(R.id.results_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
@@ -71,7 +67,8 @@ public class AttendeeLandingActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent)
             {
-
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(cdl.getWindowToken(), 0);
                 if(i == EditorInfo.IME_ACTION_SEARCH)
                 {
                     djResultsHeader.setVisibility(View.VISIBLE);
@@ -153,23 +150,9 @@ public class AttendeeLandingActivity extends AppCompatActivity {
             public void onClick(View view)
             {
 
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(cdl.getWindowToken(), 0);
                 djResultsHeader.setVisibility(View.VISIBLE);
-//
-//                t.setOnEditorActionListener(new TextView.OnEditorActionListener()
-//                {
-//                    @Override
-//                    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent)
-//                    {
-//                        if(i == EditorInfo.IME_ACTION_SEARCH)
-//                        {
-//                            searchData = t.getText().toString();
-//
-//                            return true;
-//                        }
-//                        return false;
-//                    }
-//                });
-
                 // in case the search button is clicked
                 query = mProfileDatabase.child("allDeeJays").orderByChild("djName")
                         .startAt(t.getText().toString()).endAt(t.getText().toString() + "\uf8ff");

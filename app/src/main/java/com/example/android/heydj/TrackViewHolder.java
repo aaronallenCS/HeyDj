@@ -1,5 +1,4 @@
 package com.example.android.heydj;
-
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -15,9 +14,10 @@ public class TrackViewHolder extends RecyclerView.ViewHolder {
     {
         super(itemView);
 
+
+
         songItemView = (TextView) itemView.findViewById(R.id.song_name);
         buttonViewOption = (TextView) itemView.findViewById(R.id.textViewOptions);
-
 
         itemView.setOnClickListener(new View.OnClickListener() {
 

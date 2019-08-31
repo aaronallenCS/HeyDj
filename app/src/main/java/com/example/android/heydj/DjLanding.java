@@ -124,7 +124,7 @@ public class DjLanding extends AppCompatActivity implements HelpFragment.OnFragm
                 String shareBody = "";
                 int x = 0;
                 for(String i:songNames){
-                    if(x<=20)
+                    if(x<=100)
                         shareBody+=i+"\n";
                     x++;
                 }
@@ -194,7 +194,7 @@ public class DjLanding extends AppCompatActivity implements HelpFragment.OnFragm
             {
 
                 mProfileDatabase.child(djName).child("song")
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                        .addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 List<String> sArr = new ArrayList<String>();
@@ -203,6 +203,8 @@ public class DjLanding extends AppCompatActivity implements HelpFragment.OnFragm
                                 }
 
                                 HashMap<String, Integer> songCounts = new HashMap<>();
+                                songNames.clear();
+                                arrayList.clear();
                                 for(int i = 0; i < sArr.size(); i++)
                                 {
                                     String eachSong = sArr.get(i);
@@ -278,12 +280,6 @@ public class DjLanding extends AppCompatActivity implements HelpFragment.OnFragm
         String imageEncoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child(getIntent().getStringExtra("djName")).child("profile_image").setValue(imageEncoded);
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-
     }
 
 

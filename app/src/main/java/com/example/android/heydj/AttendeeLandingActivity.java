@@ -47,19 +47,21 @@ public class AttendeeLandingActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Intent intent = getIntent();
+
+
         final CoordinatorLayout cdl = findViewById(R.id.cdAttendee);
-
-
 
         final RecyclerView recyclerView = findViewById(R.id.results_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
-
         final EditText t = (EditText) findViewById(R.id.DjNameET);
         final TextView djResultsHeader = (TextView) findViewById(R.id.dj_results_header);
 
-        djResultsHeader.setVisibility(View.GONE);
+        final ImageButton imgBSearch = findViewById(R.id.searchBtn);
+        final ImageButton clearBSearch = findViewById(R.id.clear_btn);
+
         mProfileDatabase = FirebaseDatabase.getInstance().getReference();
 
         t.setOnEditorActionListener(new TextView.OnEditorActionListener()
@@ -69,13 +71,16 @@ public class AttendeeLandingActivity extends AppCompatActivity {
             {
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(cdl.getWindowToken(), 0);
+
+
                 if(i == EditorInfo.IME_ACTION_SEARCH)
                 {
-                    djResultsHeader.setVisibility(View.VISIBLE);
+                    imgBSearch.setVisibility(View.INVISIBLE);
+                    clearBSearch.setVisibility(View.VISIBLE);
                     searchData = t.getText().toString();
 
                     query = mProfileDatabase.child("allDeeJays").orderByChild("djName")
-                            .startAt(t.getText().toString()).endAt(t.getText().toString() + "\uf8ff");
+                            .startAt(t.getText().toString().toLowerCase()).endAt(t.getText().toString().toLowerCase() + "\uf8ff");
 
 
                     FirebaseRecyclerOptions<DataSnapshot> firebaseRecyclerOptions = new FirebaseRecyclerOptions.Builder<DataSnapshot>()
@@ -134,6 +139,18 @@ public class AttendeeLandingActivity extends AppCompatActivity {
                             });
                         }
                     };
+
+                    clearBSearch.setOnClickListener(new View.OnClickListener(){
+
+                        @Override
+                        public void onClick(View view)
+                        {
+                            t.setText("");
+                            clearBSearch.setVisibility(View.INVISIBLE);
+                            imgBSearch.setVisibility(View.VISIBLE);
+
+                        }
+                    });
                     firebaseRecyclerAdapter.startListening();
                     recyclerView.setAdapter(firebaseRecyclerAdapter);
 
@@ -143,16 +160,28 @@ public class AttendeeLandingActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton imgB= (ImageButton) findViewById(R.id.searchBtn);
-        imgB.setOnClickListener(new View.OnClickListener()
+        imgBSearch.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
 
+                imgBSearch.setVisibility(View.INVISIBLE);
+                clearBSearch.setVisibility(View.VISIBLE);
+                clearBSearch.setOnClickListener(new View.OnClickListener(){
+
+                    @Override
+                    public void onClick(View view)
+                    {
+                        t.setText("");
+                        clearBSearch.setVisibility(View.INVISIBLE);
+                        imgBSearch.setVisibility(View.VISIBLE);
+
+                    }
+                });
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(cdl.getWindowToken(), 0);
-                djResultsHeader.setVisibility(View.VISIBLE);
+
                 // in case the search button is clicked
                 query = mProfileDatabase.child("allDeeJays").orderByChild("djName")
                         .startAt(t.getText().toString()).endAt(t.getText().toString() + "\uf8ff");
@@ -179,7 +208,8 @@ public class AttendeeLandingActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    protected void onBindViewHolder(@NonNull ResultsViewHolder holder, final int position, @NonNull final DataSnapshot snapshot) {
+                    protected void onBindViewHolder(@NonNull ResultsViewHolder holder, final int position, @NonNull final DataSnapshot snapshot)
+                    {
                         // Here you convert the DataSnapshot to whatever data your ViewHolder needs
                         String s = "";
                         for(DataSnapshot ds : snapshot.getChildren())
@@ -213,6 +243,9 @@ public class AttendeeLandingActivity extends AppCompatActivity {
                         });
                     }
                 };
+
+
+
                 firebaseRecyclerAdapter.startListening();
                 recyclerView.setAdapter(firebaseRecyclerAdapter);
             }

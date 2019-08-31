@@ -1,18 +1,27 @@
 package com.example.android.heydj.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.widget.Toolbar;
+
+import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.android.heydj.DjLanding;
 import com.example.android.heydj.R;
+import com.example.android.heydj.RegisterDJActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,6 +40,7 @@ public class AboutMeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    public Toolbar toolbarT;
 
     private OnFragmentInteractionListener mListener;
 
@@ -69,20 +79,58 @@ public class AboutMeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View itemView = inflater.inflate(R.layout.fragment_about_me, container, false);
+        final View itemView = inflater.inflate(R.layout.fragment_about_me, container, false);
 
-        Toolbar toolbarT = itemView.findViewById(R.id.toolbar_abt);
+        setHasOptionsMenu(true);
+
+        toolbarT = itemView.findViewById(R.id.toolbar_abt);
         toolbarT.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        toolbarT.inflateMenu(R.menu.toolbar_back);
+
+        toolbarT.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent i = new Intent(getContext(), DjLanding.class);
+                RegisterDJActivity.getDefaults("djName", itemView.getContext());
+                startActivity(i);
+                return false;
+            }
+        });
+
 
         TextView textView = (TextView) itemView.findViewById(R.id.sc_link);
         textView.setClickable(true);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         String text = "www.soundcloud.com/octxbrr";
-        textView.setText("Check out my beats at: " + Html.fromHtml(text));
+        textView.setText(Html.fromHtml(text));
+
 
         // Inflate the layout for this fragment
         return itemView;
     }
+
+//    public static void setDefaults(String key, String value, Context context) {
+//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+//        SharedPreferences.Editor editor = preferences.edit();
+//        editor.putString(key, value);
+//        editor.commit();
+//    }
+//
+//    public static String getDefaults(String key, Context context)
+//    {
+//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+//        return preferences.getString(key, null);
+//    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.toolbar_back, menu);
+    }
+
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

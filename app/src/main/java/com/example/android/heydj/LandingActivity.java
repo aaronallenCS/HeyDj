@@ -59,13 +59,12 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
                 .build();
 
 
+
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
-
-
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
@@ -109,7 +108,6 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
                 return;
             }
         }
-
     }
 
     private void updateUI(final GoogleSignInAccount gsa)
@@ -128,7 +126,6 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
                 else
                 {
                     Intent i = new Intent(getApplicationContext(), RegisterDJActivity.class);
-
                     startActivity(i);
                 }
             }

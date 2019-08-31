@@ -34,7 +34,4 @@
                 android:textColor="@android:color/white"
                 android:textSize="10sp" />
         </RelativeLayout>
-
-
-
 </LinearLayout>

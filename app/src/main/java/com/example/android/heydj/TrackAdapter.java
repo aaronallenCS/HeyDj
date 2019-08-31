@@ -4,11 +4,17 @@ package com.example.android.heydj;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -27,7 +33,6 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackViewHolder>
     private String mCurrent;
 
     private InterstitialAd mInterstitialAd;
-
 
     public TrackAdapter(Context context, List<String> mSongList)
     {
@@ -88,6 +93,50 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackViewHolder>
 
                 AlertDialog alert1 = builder1.create();
                 alert1.show();
+            }
+        });
+
+        holder.buttonViewOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+
+                android.widget.PopupMenu popup = new android.widget.PopupMenu(view.getContext(), holder.buttonViewOption);
+                popup.getMenuInflater().inflate(R.menu.spotify_menu, popup.getMenu());
+                popup.setOnMenuItemClickListener(new android.widget.PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch(menuItem.getItemId())
+                        {
+                            case R.id.spotify_menu_item:
+                                final String appPackageName = "com.spotify.music";
+                                final String referrer = "adjust_campaign=PACKAGE_NAME&" +
+                                        "adjust_tracker=ndjczk&utm_source=adjust_preinstall";
+
+                                try
+                                {
+                                    Uri uri = Uri.parse("market://details")
+                                            .buildUpon()
+                                            .appendQueryParameter("id", appPackageName)
+                                            .appendQueryParameter("referrer", referrer)
+                                            .build();
+                                    view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                                }
+                                catch(android.content.ActivityNotFoundException ignored)
+                                {
+                                    Uri uri = Uri.parse("https://play.google.com/store/apps/details")
+                                            .buildUpon()
+                                            .appendQueryParameter("id", appPackageName)
+                                            .appendQueryParameter("referrer", referrer)
+                                            .build();
+
+                                    view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                                }
+                                return true;
+                        }
+                        return false;
+                    }
+                });
+                popup.show();
             }
         });
     }

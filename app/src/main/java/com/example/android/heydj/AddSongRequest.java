@@ -71,12 +71,28 @@ public class AddSongRequest extends AppCompatActivity
 
         final EditText djSearch = findViewById(R.id.editText2);
 
+        final ImageButton imgBClear = findViewById(R.id.clear);
+
+        imageButton = findViewById(R.id.search);
+
+        imgBClear.setVisibility(View.INVISIBLE);
         djSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
 
                 if(i == EditorInfo.IME_ACTION_SEARCH)
                 {
+                    imageButton.setVisibility(View.INVISIBLE);
+                    imgBClear.setVisibility(View.VISIBLE);
+                    imgBClear.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            imgBClear.setVisibility(View.INVISIBLE);
+                            imageButton.setVisibility(View.VISIBLE);
+                            djSearch.setText("");
+                        }
+                    });
+
                     InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(cdl.getWindowToken(), 0);
                     songLists.clear();
@@ -97,6 +113,16 @@ public class AddSongRequest extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
+                imageButton.setVisibility(View.INVISIBLE);
+                imgBClear.setVisibility(View.VISIBLE);
+                imgBClear.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        imgBClear.setVisibility(View.INVISIBLE);
+                        imageButton.setVisibility(View.VISIBLE);
+                        djSearch.setText("");
+                    }
+                });
 
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(cdl.getWindowToken(), 0);
@@ -105,12 +131,6 @@ public class AddSongRequest extends AppCompatActivity
                 updateInfo();
             }
         });
-
-
-
-
-
-
     }
 
     public void updateInfo()

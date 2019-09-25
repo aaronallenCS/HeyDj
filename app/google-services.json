@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "558614802959",
+    "firebase_url": "https://heydj-8acaa.firebaseio.com",
+    "project_id": "heydj-8acaa",
+    "storage_bucket": "heydj-8acaa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:558614802959:android:ef2a3681cb5653076e297a",
+        "android_client_info": {
+          "package_name": "com.song.request.heydj"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "558614802959-6fbmpo96odo44eb2cmupfu9rsofa8l2k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.song.request.heydj",
+            "certificate_hash": "218cf026c55c8483c51772b1834c1cd3648a283a"
+          }
+        },
+        {
+          "client_id": "558614802959-kh34uspen6acm51vu9m1shi2in3ngk97.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCntMQJVvnSKSh36xuCTvKcuQr3-7wekP8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "558614802959-kh34uspen6acm51vu9m1shi2in3ngk97.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

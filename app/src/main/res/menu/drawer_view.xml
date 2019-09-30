@@ -1,18 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <group android:checkableBehavior="single">
 
             <item
-                android:id="@+id/about_me"
-                android:icon="@drawable/ic_person_black_24dp"
-                android:title="About Me" />
+                android:id="@+id/hey_dj"
+                android:icon="@drawable/ic_cloud_black_24dp"
+                android:title="Hey DJ Website" />
 
             <item
+                android:id="@+id/linked_in"
+                android:icon="@drawable/ic_linkedin_logo"
+                android:title="LinkedIn"/>
 
-                android:id="@+id/help_fragment"
-                android:icon="@drawable/ic_info_black_24dp"
-                android:title="Help / FAQ" />
+            <item
+                android:id="@+id/youtube"
+                android:icon="@drawable/ic_youtube"
+                android:title="Youtube"/>
+
+            <item
+                android:id="@+id/support"
+                android:icon="@drawable/ic_email_black_24dp"
+                android:title="Contact Support"/>
+
+            <item
+                android:id="@+id/nav_item1"
+                android:title="Custom Requests"
+                android:icon="@drawable/ic_music_note_black_24dp"
+                app:actionLayout="@layout/layout_switch"
+                />
+
         </group>
 
 </menu>

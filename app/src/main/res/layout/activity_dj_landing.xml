@@ -7,12 +7,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background"
-    tools:context=".DjLanding">
+    tools:context="com.song.request.heydj.DjLanding">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".DjLanding">
+        tools:context="com.song.request.heydj.DjLanding">
 
         <include
             android:id="@+id/include2"

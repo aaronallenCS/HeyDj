@@ -7,5 +7,5 @@
         android:orderInCategory="1"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_arrow_back_black_24dp"
-        android:title="Back"/>
+        android:title="Back" />
 </menu>

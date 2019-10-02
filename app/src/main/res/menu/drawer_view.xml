@@ -24,13 +24,6 @@
                 android:icon="@drawable/ic_email_black_24dp"
                 android:title="Contact Support"/>
 
-            <item
-                android:id="@+id/nav_item1"
-                android:title="Custom Requests"
-                android:icon="@drawable/ic_music_note_black_24dp"
-                app:actionLayout="@layout/layout_switch"
-                />
-
         </group>
 
 </menu>

@@ -23,5 +23,4 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="DeleteAll">Delete All</string>
-    <string name="title_activity_custom_request">CustomRequestActivity</string>
 </resources>

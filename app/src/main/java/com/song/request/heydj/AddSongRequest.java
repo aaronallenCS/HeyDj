@@ -1,6 +1,5 @@
 package com.song.request.heydj;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 
@@ -46,7 +45,6 @@ public class AddSongRequest extends AppCompatActivity
 
     private ImageButton imageButton;
     private ImageButton clearBtn;
-    private TextView customRequestLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -69,17 +67,6 @@ public class AddSongRequest extends AppCompatActivity
 
         mArtistName = (EditText) findViewById(R.id.editText2);
 
-
-        customRequestLink = (TextView) findViewById(R.id.customRequestLink);
-
-        customRequestLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(AddSongRequest.this, CustomRequestActivity.class);
-                i.putExtra("djName", djNameSelected);
-                startActivity(i);
-            }
-        });
 
 
         recyclerView = (RecyclerView) findViewById(R.id.search_result_recycler);

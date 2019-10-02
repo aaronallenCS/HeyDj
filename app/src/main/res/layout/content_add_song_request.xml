@@ -73,16 +73,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/customRequestLink"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editText2"
-        android:layout_marginTop="15dp"
-        android:gravity="center"
-        android:paddingLeft="10dp"
-        android:text="Can't find your song? Custom request." />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_result_recycler"
         android:layout_width="393dp"

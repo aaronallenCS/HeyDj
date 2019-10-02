@@ -17,6 +17,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.song.request.heydj.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -87,24 +88,37 @@ public class RegisterDJActivity extends AppCompatActivity {
                     rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            //checks in the database to see if the user already has DJs
-                            if (dataSnapshot.hasChild(googleUserName)) {
-                                if (dataSnapshot.hasChild(djName)) {
-                                    return;
+
+                            String spaceLessDJ = djName.trim();
+                            if(spaceLessDJ.trim().isEmpty())
+                            {
+                                Toast.makeText(RegisterDJActivity.this, "Sorry, you can't submit blanks", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+
+                                //checks in the database to see if the user already has DJs
+                                if (dataSnapshot.hasChild(googleUserName)) {
+                                    if (dataSnapshot.hasChild(spaceLessDJ)) {
+                                        return;
+                                    }
+                                    //pushes the value allDeeJays for every single user
+                                    Map<String, Object> updates = new HashMap<String, Object>();
+                                    updates.put("acct", googleUserName);
+                                    updates.put("djName", spaceLessDJ.toLowerCase());
+                                    rootRef.child("allDeeJays").push().updateChildren(updates);
+                                    //pushes the value of the dj to the dj for the specific google user
+                                    rootRef.child(googleUserName).child(spaceLessDJ.toLowerCase()).push().setValue(spaceLessDJ);
+                                } else {
+                                    Map<String, Object> updates = new HashMap<String, Object>();
+                                    updates.put("djName", spaceLessDJ);
+                                    //sets a new google username for ones that don't exist
+                                    rootRef.child("allDeeJays").push().updateChildren(updates);
+                                    rootRef.child(googleUserName).push().child("djName").setValue(spaceLessDJ.toLowerCase());
+                                    Intent i2 = new Intent(getApplicationContext(), DjLanding.class);
+                                    i2.putExtra("djName", spaceLessDJ);
+                                    startActivity(i2);
                                 }
-                                //pushes the value allDeeJays for every single user
-                                Map<String, Object> updates = new HashMap<String, Object>();
-                                updates.put("acct", googleUserName);
-                                updates.put("djName", djName.toLowerCase());
-                                rootRef.child("allDeeJays").push().updateChildren(updates);
-                                //pushes the value of the dj to the dj for the specific google user
-                                rootRef.child(googleUserName).child(djName.toLowerCase()).push().setValue(djName);
-                            } else {
-                                Map<String, Object> updates = new HashMap<String, Object>();
-                                updates.put("djName", djName);
-                                //sets a new google username for ones that don't exist
-                                rootRef.child("allDeeJays").push().updateChildren(updates);
-                                rootRef.child(googleUserName).push().child("djName").setValue(djName.toLowerCase());
                             }
                         }
 
@@ -136,25 +150,38 @@ public class RegisterDJActivity extends AppCompatActivity {
 
                 rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        //checks in the database to see if the user already has DJs
-                        if (dataSnapshot.hasChild(googleUserName)) {
-                            if (dataSnapshot.hasChild(djName)) {
-                                return;
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                    {
+                        String spaceLessDJ = djName.trim();
+                        if(spaceLessDJ.trim().isEmpty())
+                        {
+                            Toast.makeText(RegisterDJActivity.this, "Sorry, you can't submit blanks", Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+
+                            //checks in the database to see if the user already has DJs
+                            if (dataSnapshot.hasChild(googleUserName)) {
+                                if (dataSnapshot.hasChild(spaceLessDJ)) {
+                                    return;
+                                }
+                                //pushes the value allDeeJays for every single user
+                                Map<String, Object> updates = new HashMap<String, Object>();
+                                updates.put("acct", googleUserName);
+                                updates.put("djName", spaceLessDJ.toLowerCase());
+                                rootRef.child("allDeeJays").push().updateChildren(updates);
+                                //pushes the value of the dj to the dj for the specific google user
+                                rootRef.child(googleUserName).child(spaceLessDJ.toLowerCase()).push().setValue(spaceLessDJ);
+                            } else {
+                                Map<String, Object> updates = new HashMap<String, Object>();
+                                updates.put("djName", spaceLessDJ);
+                                //sets a new google username for ones that don't exist
+                                rootRef.child("allDeeJays").push().updateChildren(updates);
+                                rootRef.child(googleUserName).push().child("djName").setValue(spaceLessDJ.toLowerCase());
+                                Intent i2 = new Intent(getApplicationContext(), DjLanding.class);
+                                i2.putExtra("djName", spaceLessDJ);
+                                startActivity(i2);
                             }
-                            //pushes the value allDeeJays for every single user
-                            Map<String, Object> updates = new HashMap<String, Object>();
-                            updates.put("acct", googleUserName);
-                            updates.put("djName", djName.toLowerCase());
-                            rootRef.child("allDeeJays").push().updateChildren(updates);
-                            //pushes the value of the dj to the dj for the specific google user
-                            rootRef.child(googleUserName).child(djName.toLowerCase()).push().setValue(djName);
-                        } else {
-                            Map<String, Object> updates = new HashMap<String, Object>();
-                            updates.put("djName", djName);
-                            //sets a new google username for ones that don't exist
-                            rootRef.child("allDeeJays").push().updateChildren(updates);
-                            rootRef.child(googleUserName).push().child("djName").setValue(djName.toLowerCase());
                         }
                     }
 
@@ -163,9 +190,7 @@ public class RegisterDJActivity extends AppCompatActivity {
                     }
                 });
 
-                Intent i2 = new Intent(getApplicationContext(), DjLanding.class);
-                i2.putExtra("djName", djName);
-                startActivity(i2);
+
             }
         });
     }
